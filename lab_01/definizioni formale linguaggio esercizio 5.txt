@@ -1,0 +1,6 @@
+
+L = {w | w=xaaay oppure w=xabay con x,y appartenenti ad {a,b}* } 
+
+
+
+

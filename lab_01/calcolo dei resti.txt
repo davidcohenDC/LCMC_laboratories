@@ -1,0 +1,15 @@
+N = m*5+r con r <= 4
+
+se leggo 0 
+
+diventa 2N cioè (m*5+r)*2=m*5*2+2*r quindi il nuovo resto è:
+- 2r se 2r <= 4
+- 2r-5 altrimenti
+
+se leggo 1
+
+diventa 2N+1 cioè (m*5+r)*2+1=m*5*2+2*r+1 quindi il nuovo resto è:
+- 2r+1 se 2r+1 <= 4
+- (2r+1)-5 altrimenti
+
+
