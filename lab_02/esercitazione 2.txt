@@ -1,0 +1,127 @@
+Correzione esercizi precedenti per casa.
+
+Abbiamo realizzato (prima esercitazione in laboratorio) un DFA che controlla la correttezza 
+delle somme binarie. Data la stringa: a_0 b_0 c_0 ... a_n b_n c_n controlla se 
+a_n...a_0 + b_n...b_0 = c_n...c_0
+Esercizio era valutare se sia possibile realizzare un DFA di questo tipo che riceve pero' 
+l'input nel formato a_n b_n c_n...a_0 b_0 c_0 (esercizio 1) oppure 
+a_n...a_0 b_n...b_0 c_n...c_0 (esercizio 2).
+
+-------------------------------------------------------------------------------
+
+---------------------------------------
+1. Esercizi sull'uso del pumping lemma.
+---------------------------------------
+
+ESEMPIO VISTO A LEZIONE
+Linguaggio sull'alfabeto {0,1} delle stringhe il cui numero di 0 è uguale al numero di 1
+
+Si supponga per assurdo che L sia regolare.
+Deve quindi esistere un DFA A tale che L=L(A).
+Quindi, chiamato n il numero degli stati di A, si ha che:
+
+esiste n>=1 t.c. per ogni w \in L : |w|>=n, w puo' essere scomposta in w=xyz con |y|>0, |xy|<=n, 
+xy^kz appartiene ad L per ogni k >=0 
+(PUMPING LEMMA)
+
+Ma se considero la stringa w=0^n1^n una tale scomposizione non puo' esistere!
+Dato, infatti, che |y|>0 e |xy|<=n, allora y sara' composta da soli 0 e almeno uno, quindi, 
+considerando k=0, ho che la stringa xz non appartiene ad L (il suo numero di 0 e' < a 
+quello degli 1).
+ASSURDO
+
+ALTRO ESEMPIO VISTO A LEZIONE
+Linguaggio sull'alfabeto {0,1} delle stringhe il cui numero di 1 e' maggiore del numero di 0
+
+Si supponga per assurdo che L sia regolare, dunque deve valere il Pumping Lemma.
+Quindi esiste n>=1 t.c. per ogni w \in L : |w|>=n, w puo' essere scomposta in w=xyz con |y|>0, 
+|xy|<=n, xy^kz appartiene ad L per ogni k >=0 
+
+Ma se considero la stringa w=0^n1^(n+1) una tale scomposizione non puo' esistere!
+Dato, infatti, che |y|>0 e |xy|<=n, allora y sara' composta da soli 0 e almeno uno, quindi, 
+considerando k=2, ho che la stringa xyyz non appartiene ad L (il suo numero di 0 e' >= a 
+quello degli 1). 
+ASSURDO
+
+
+Mostrare che i seguenti linguaggi non sono regolari:
+
+a- Linguaggio sull'alfabeto {a,b} delle stringhe a^hb^m con m>=2h
+ 
+b- Linguaggio delle parentesi tonde bilanciate; cioe', delle stringhe, sull'alfabeto composto dai due simboli "(" e ")", che sono espressioni Exp fatte come segue.
+Una Exp e' nella forma: ( Exp1 ) oppure Exp1 Exp2 oppure \epsilon
+
+Esempi di stringhe del linguaggio: 
+()()((()))
+(()())
+(())((()))
+Esempi di stringhe non del linguaggio: 
+)(
+(()
+
+c- Linguaggio sull'alfabeto binario delle stringhe del tipo xy dove y coincide con il complemento di x (0 diventano 1, 1 diventano 0)
+
+d- Linguaggio sull'alfabeto binario delle stringhe del tipo ww
+
+--------------------------------
+Esercizi su espressioni regolari
+--------------------------------
+[NOTA: in JFLAP l'espressione regolare stringa vuota e' indicata con !]
+
+2 Considerare l'espressione regolare 0*(0+11)1*. Dire quale linguaggio rappresenta.
+
+3 Considerare l'espressione regolare 1*0+0*1. Trasformarla in un epsilon-NFA equivalente usando l'algoritmo visto a lezione (del libro di testo). Confrontare poi tale epsilon-NFA con quello ottenuto 
+trasformando l'espressione regolare in un epsilon-NFA con JFLAP.
+
+4 Trasformare in RE l'automa nel file "nfa2re" usando l'algoritmo visto a lezione (del libro di testo).
+
+5 Si consideri l'alfabeto {a,b}. Definire una RE per i linguaggi che 
+contengono le stringhe del seguente tipo (verificare, trasformando con JFLAP la RE in un epsilon-NFA, se vengono gestite correttamente le stringhe nei file "test_x.txt" indicati):
+
+a- un numero pari di a seguito da un numero di b che diviso per 3 da' resto 2
+"test_a.txt"
+Accept
+Accept
+Accept
+Accept
+Reject
+Reject
+
+(aa)*bb(bbb)* /or (aa)*b(bbb)*b
+
+
+---------
+Per casa:
+--------- 
+
+1 Si consideri l'alfabeto {a,b}. Definire una RE per i linguaggi che 
+contengono le stringhe del seguente tipo (verificare, trasformando con JFLAP la RE in un epsilon-NFA, se vengono gestite correttamente le stringhe nei file "test_x.txt" indicati):
+
+b- un numero pari di "a" ed esattamente una "b"
+"test_b.txt"
+Accept
+Accept
+Accept
+Accept
+Reject
+Reject
+
+(aa)*(b+aba)(aa)*
+
+c- ogni gruppo di "b" adiacenti contiene un numero di "b" multiplo di 2 o di 3
+"test_c.txt"
+Accept
+Accept
+Accept
+Accept
+Reject
+Reject
+Reject
+
+2 Esercizio sull'uso del pumping lemma.
+Mostrare che il seguente linguaggio non e' regolare:
+- Linguaggio dato come esercizio per casa, cio 
+stringhe a_n...a_0 b_n...b_0 c_n...c_0 tali che a_n...a_0 + b_n...b_0 = c_n...c_0
+
+
+

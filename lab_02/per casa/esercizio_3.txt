@@ -1,0 +1,26 @@
+2 Esercizio sull'uso del pumping lemma.
+Mostrare che il seguente linguaggio non è regolare:
+- Linguaggio dato come esercizio per casa, cioè
+stringhe a_n...a_0 b_n...b_0 c_n...c_0 tali che a_n...a_0 + b_n...b_0 = c_n...c_0
+
+	------
+	Si supponga per assurdo che L sia regolare, dunque deve valre il Pumping Lemma.
+	Quindi esiste n>=1 t.c. per ogni w \in L : |w|>=n, w può essere scomposta in w=xyz con |y|>0, 
+	|xy|<=n, xy^kz appartiene ad L per ogni k >=0 
+	------
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+Considero la stringa w = a^n tc.
+k = 0 --> xz -> a^n-1 --> a perde di significato
+Lo stesso vale per b e per c.
+
+Primo guardo se è divisibile in 3 parti uguali. 
+0^n1^n0^n (una w accettabile) 
+Quindi prima guardo se la lunghezza è un multiplo di 3. Due casi:
+* Se ne tolgo uno solo sicuramente non appartiene al linguaggio perchè non è fatto da 3 stringhe lunghe uguali.
+* Oppure se fatto da 3 stringhe uguali ho tolto 3 o 6 zeri. E devo fare vedere che esco dal linguaggio. 
+Quindi una volta divisa in 3 parti l'ultima cifra della prima parte è 1.  Le altre stringhe finiscono con 1 e quindi
+vorrebbe dire che 1 + 1 = 1 ma non va bene.
+
+1^n0^n1^n con k=2 1^h ottengo una stringa 1^h0^0^n1^n con h>n e guardo quelle più significative
+Se non è multipla di 3 la divido in 3 parti
+1  1  0 non è corretto perchè avrei riporto ad un altra cifra con numeri più lunghi.

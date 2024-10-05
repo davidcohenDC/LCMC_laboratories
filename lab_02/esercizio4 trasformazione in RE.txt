@@ -1,0 +1,45 @@
+*elimino q2*
+
+pred-succ
+
+q0-q1 : ba 
+q4-q1 : ba
+q3-q1 : aa
+
+*elimino q4*
+
+pred-succ
+
+q1-q1 : aba
+q1-q3 : aa
+
+**calcolo E_q3**
+
+*elimino q1*
+
+pred-succ
+
+q0-q3 : (a+ba)(aba)*aa
+q3-q3 : aa(aba)*aa
+
+E_q3=(R+SU*T)*SU*
+    = (a+ba)(aba)*aa(aa(aba)*aa)*
+
+
+**calcolo E_q1**
+
+*elimino q3*
+
+pred-succ 
+
+q1-q1 : aaaa
+
+E_q1=(R+SU*T)*SU*
+    = (a+ba)(aba+aaaa)*
+
+-------------------------
+
+E=E_q1+E_q3
+ =(a+ba)(aba+aaaa)*+(a+ba)(aba)*aa(aa(aba)*aa)*
+  
+

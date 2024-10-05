@@ -1,0 +1,46 @@
+a.
+
+L = {a^hb^m | m>=2h}
+Si supponga per assurdo che L sia regolare, dunque deve valere il Pumping Lemma.
+Quindi esiste n>=1 t.c. per ogni w \in L : |w|>=n, w può essere espressa come w=xyz con
+|y|>0, |xy|<=n, xy^kz appartiene ad L per ogni k >=0.
+Considero la stringa w=a^nb^2n (e' corretta perche' w appartiene ad L e |w|>=n) e la sua scomposizione w=xyz.
+
+Dato che |y|>0 e |xy|<=n allora y sarà composta di sole “a” e almeno una.
+Perciò scegliendo k=2 e considerando la stringa xy^2z = xyyz le “a” saranno aumentate di almeno uno e quindi le “b” non saranno più in numero maggiore o uguale al doppio delle “a”. Quindi xy^2z non appartiene ad L. ASSURDO
+
+
+b.
+
+L linguaggio delle stringhe di parentesi bilanciate, cioè espressioni Exp nella forma: 
+( Exp1 ) oppure Exp1 Exp2 oppure \epsilon
+Si supponga per assurdo che L sia regolare, dunque deve valere il Pumping Lemma.
+Quindi esiste n>=1 t.c. per ogni w \in L : |w|>=n, w può essere espressa come w=xyz con
+|y|>0, |xy|<=n, xy^kz appartiene ad L per ogni k >=0.
+Considero la stringa w=(^n)^n (e' corretta perche' w appartiene ad L e |w|>=n) e la sua scomposizione w=xyz. 
+
+Dato che |y|>0 e |xy|<=n allora y sarà composta di sole “(” e almeno una.
+Perciò scegliendo k=0 e considerando la stringa xy^0z = xz le “(” saranno diminuite di almeno uno e quindi le “)” non saranno più in numero uguale alle “(”, quindi le parentesi non sono più bilanciate e la stringa non appartiene al linguaggio. ASSURDO
+
+c.
+
+L={xy | x\in{0,1}*, y complemento a 1 di x}
+Si supponga per assurdo che L sia regolare, dunque deve valere il Pumping Lemma.
+Quindi esiste n>=1 t.c. per ogni w \in L : |w|>=n, w può essere espressa come w=xyz con
+|y|>0, |xy|<=n, xy^kz appartiene ad L per ogni k >=0.
+Considero la stringa w=0^n1^n (e' corretta perche' w appartiene ad L e |w|>=n) e la sua scomposizione w=xyz. 
+
+Dato che |y|>0 e |xy|<=n allora y sarà composta di almeno uno “0” e soli “0”.
+Perciò scegliendo k=0 e considerando la stringa xy^0z = xz = 0^m1^n, m < n questa non appartiene ad L: infatti o è di lunghezza dispari oppure, se è di lunghezza pari, sia la metà sinistra che quella destra terminano con “1”, dunque una non può essere il complemento a 1 dell’altra. ASSURDO
+
+d.
+
+L={ww | w\in{0,1}*}
+Si supponga per assurdo che L sia regolare, dunque deve valere il Pumping Lemma.
+Quindi esiste n>=1 t.c. per ogni w \in L : |w|>=n, w può essere espressa come w=xyz con
+|y|>0, |xy|<=n, xy^kz appartiene ad L per ogni k >=0.
+Considero la stringa w=0^n10^n1 (e' corretta perche' w appartiene ad L e |w|>=n) e la sua scomposizione w=xyz. 
+
+Dato che |y|>0 e |xy|<=n allora y sarà composta di almeno uno “0” e soli “0”.
+Perciò scegliendo k=0 e considerando la stringa xy^0z = xz = 0^m10^n1, m < n questa non appartiene ad L: infatti o è di lunghezza dispari oppure, se è di lunghezza pari, la metà sinistra terminerà sicuramente con “0” mentre quella destra con “1”. ASSURDO
+
