@@ -1,0 +1,11 @@
+Il pda possiede più possili cammini per:
+* a, A\AAA ed ϵ, A\A violando che dallo stato è possibile con la stessa pila (A) avere o non avere la stringa a avendo più transizioni/cammini.
+* a, Z\AAZ ed ϵ, Z\Z violando che dallo stato è possibile con la stessa pila (Z) avere o non avere la stringa a avendo più transizioni/cammini.
+* b, A\ϵ ed ϵ, A\A violando che dallo stato è possibile con la stessa pila (A) avere o non avere la stringa b avendo più transizioni/cammini.
+
+altra risposta (del prof.)
+
+NO non lo è perche es. lo stato q0 ha una transizione per la coppia "a,A"
+e per la coppia "\epsilon,A" (quindi il secondo vincolo che un PDA deve 
+rispettare per essere deterministico è violato)
+

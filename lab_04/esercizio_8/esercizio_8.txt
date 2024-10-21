@@ -1,0 +1,24 @@
+
+
+Si consideri il linguaggio su alfabeto { (,),[,] } delle stringhe w f(w^r) dove w è una stringa sui caratteri "(" ed "[". f è la funzione che trasforma "(" in ")" e "[" in "]" che si assume estesa a stringhe considerando f(a_1...a_n)=f(a_1)...f(a_n). Per esempio "[([])]" ed "(([()]))" sono stringhe del linguaggio. 
+- è possibile riconoscerlo **per stato finale** con un DPDA? 
+SI vedi file allegato
+- esiste una CFG non ambigua che genera il linguaggio? (in caso affermativo mostrare una tale CFG)
+SI:
+S->(S)|[S]|\epsilon
+
+STRIGHE LINGUAGGIO:
+
+SI
+\epsilon
+(([()]))
+[([])]
+(())
+[(())]
+[()]
+
+
+NO
+[()()]
+(()
+

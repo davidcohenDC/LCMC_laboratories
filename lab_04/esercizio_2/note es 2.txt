@@ -1,0 +1,16 @@
+numero 0 doppio di numero 1
+
+idea:
+
+ECCEDENZA DI 1 (per compensare devo produrre 0 quanto il contenuto della pila)
+
+ogni 1 impilo due 1
+ogni 0 spilo un 1
+
+ECCEDENZA DI 0 (per compensare devo produrre 1 quanto la meta' della pila)
+
+ogni 0 impilo uno 0
+ogni 1 spilo due 0 (se ce n'e' uno solo indico una eccedenza di 1)
+
+
+esempio critico: 010 deve appartenere al linguaggio

@@ -1,0 +1,9 @@
+
+NO non lo è perche es. lo stato q0 ha una transizione per la coppia "a,A"
+e per la coppia "\epsilon,A" (quindi il secondo vincolo che un PDA deve 
+rispettare per essere deterministico è violato)
+
+
+
+
+
