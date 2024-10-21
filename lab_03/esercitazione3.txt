@@ -1,0 +1,59 @@
+Correzione esercizi per casa.
+
+1 Si consideri l'alfabeto {a,b}. Definire una RE per i linguaggi che 
+contengono le stringhe del seguente tipo:
+
+b- un numero pari di "a" ed esattamente una "b"
+"test_b.txt"
+Accept
+Accept
+Accept
+Accept
+Reject
+Reject
+
+c- ogni gruppo di "b" adiacenti contiene un numero di "b" multiplo di 2 o di 3
+"test_c.txt"
+Accept
+Accept
+Accept
+Accept
+Reject
+Reject
+Reject
+
+2 Esercizio sull'uso del pumping lemma.
+Mostrare che il seguente linguaggio non è regolare:
+- Linguaggio dato come esercizio per casa, cioè
+stringhe a_n...a_0 b_n...b_0 c_n...c_0 tali che a_n...a_0 + b_n...b_0 = c_n...c_0
+
+------------------------------------------------------------------------------
+
+
+1. Definire una grammatica libera dal contesto (CFG) per i seguenti linguaggi sull'alfabeto {a,b,c}:
+a- linguaggio delle stringhe a^n b^2n (mostrare che "aabbbb" è derivabile dalla CFG)
+b- linguaggio delle stringhe (abc)^n (cba)^n
+c- linguaggio delle stringhe a^n b^m in cui n <= m
+d- linguaggio delle stringhe a^n b^m c^n con n pari e m dispari
+e- linguaggio delle stringhe a^n b^m c^p in cui n <= m+p
+
+2. Dire se la CFG del punto "e" dell'esercizio 3 è ambigua o meno. In caso affermativo mostrare una stringa generata dalla CFG che abbia (almeno) due alberi sitattici/derivazioni canoniche sinistre. Mostrare tali alberi sintattici e le corrispondenti derivazioni canoniche sinistre.
+
+3. Esercizio su minimizzazione DFA. Effettuare (a mano con l'algoritmo riempi-tabella visto a lezione) la minimizzazione dell'automa in exMinimization.jff
+
+4. Verificare se le seguenti due espressioni regolari sono equivalenti (trasformarle in DFA automaticamente con JFLAP, senza minimizzarle (!) e poi verificarne l'equivalenza a mano con l'algoritmo riempi-tabella visto a lezione):
+- (0+1)*01
+- (0+1)*(10+!)01
+I DFA e i nomi degli stati da usare sono nel file "stati equivalenza.jpg"
+
+
+PER CASA
+
+Si consideri il linguaggio su alfabeto {(,)} delle stringhe generate dalla
+CFG
+S -> SS | (S) | ()
+Dire se tale CFG è ambigua o meno. In caso affermativo mostrare una stringa generata dalla CFG che abbia (almeno) due alberi sitattici/derivazioni canoniche sinistre. Mostrare tali alberi sintattici e le corrispondenti derivazioni canoniche sinistre.
+Mostrare inoltre le corrispondenti derivazioni canoniche destre.
+
+
+

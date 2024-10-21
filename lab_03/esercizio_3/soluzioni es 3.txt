@@ -1,0 +1,13 @@
+
+    _
+ 1 |+|_              X - prima passata
+ 2 |O O|_            O - seconda passata
+*3 |X X X|_          + - terza passata
+ 4 |O   O X|_
+ 5 |O O   X O|_
+*6 |X X X   X X|_
+ 7 |O   O X   O X|_
+*8 |X X X   X X   X|
+    0 1 2 3 4 5 6 7
+          *     *
+Classi di equivalenza {q1, q4, q7}, {q3, q6, q8}, {q2, q5}, {q0}

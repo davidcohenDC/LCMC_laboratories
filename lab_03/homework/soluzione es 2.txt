@@ -1,0 +1,9 @@
+L={a_n…a_0b_n…b_0c_n…c_0 | a,b,c\in{0,1}* /\ a_n…a_0+b_n…b_0=c_n…c_0}
+Si supponga per assurdo che L sia regolare, dunque deve valere il Pumping Lemma.
+Quindi esiste n>=1 t.c. per ogni w \in L, w può essere espressa come w=xyz con
+|y|>0, |xy|<=n, xy^kz appartiene ad L per ogni k >=0.
+Considero la stringa w=0^n1^n1^n e la sua scomposizione w=xyz. E' corretta perche' w appartiene ad L e |w|>=n.
+
+Dato che |y|>0 e |xy|<=n allora y sarà composta di almeno uno “0” e soli “0”.
+Perciò scegliendo k=0 e considerando la stringa xy^0z = xz = 0^m1^n1^n questa non appartiene ad L: infatti o è di lunghezza non multipla di 3 oppure, se è divisibile in tre parti di lunghezza uguale, la prima parte termina con “1”. Quindi tutte e tre le parti terminano con uno e la somma delle "unità" non è corretta (verrebbe 1+1=1). ASSURDO
+

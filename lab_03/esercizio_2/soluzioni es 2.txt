@@ -1,0 +1,10 @@
+S->aSc|Sc|B
+B->aBb|Bb|\epsilon
+
+La grammatica è ambigua perché, ad esempio, la stringa "abc"
+ha due alberi sitattici (vedi file pdf)/derivazioni canoniche sinistre.
+
+S => aSc => aBc => aBbc => abc
+S => Sc => Bc => aBbc => abc
+
+
