@@ -1,0 +1,25 @@
+1) Si consideri il linguaggio L delle stringhe su alfabeto {a,b,c} per cui non vale che il numero delle "a", delle "b" e delle "c" è lo stesso (vi sono almeno due tra "a", "b" e "c" per cui la quantità delle une è diversa dalla quantità delle altre). Dire se il linguaggio L è, o meno, libero dal contesto e dimostrare la propria affermazione. Qual'è il linguaggio complementare di L?
+
+SI
+abcc
+aabcc
+aabbbcccc
+aabccc
+
+NO
+\epsilon
+abc
+
+
+Dim. per assurdo,
+supponiamo che sia libero, allora per il pumping lemma dei liberi deve valere che:
+esiste n>=1 per cui ogni stringa z di L con lunghezza di |z|>=n è scomponibile in uvwxy t.c:
+- |vwx| >= 0
+- |vw| > 0
+- u v^i w x^i per ogni i>0 /in L.
+
+Scegliamo z =  0^n10^n1 che appartiene ad L e che ha lunghezza >= n.
+Vanno bene come stringhe ma non arrivo all'assurdo perchè la barchetta mi tocca al massimo due gruppi adiacenti sono sempre alterni e quindi la barchetta coinvolge al massimo due gruppi di tipo diverso e ci sono sempre due altri gruppi che non sono toccati e sono di tipo diverso, quindi sia che tagli con zero che pompi per 2 o più ce un gruppo di zeri e 1 he perde un simbolo ed un altro che lo mantiene. Nel libro.
+
+- Se yx contiene almeno una "a" allora considero il pompaggio i=2 cioè uv^2wx^2y sicuramente non appartiene al linguaggio perchè non sarà più #a<#b<#c. (perchè il numero delle a diventa >= n+1 e il numero delle c rimane n+2 quindi non vale #a <#c-1).
+- Se contiene simboli "a" allora taglio con i=0 cioè uv^0wx^0y = uwy sicuramente non apparteine al linguaggio perchè perderò almeno una b o almeno una c e il numero delle a rimane n e quindi non vale che #a < #b oppure non vale più che #a < #c-1.
