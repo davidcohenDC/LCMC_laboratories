@@ -1,0 +1,213 @@
+-----------------------------------------------------------------------------
+CORREZIONE ESERCIZIO PER CASA
+-----------------------------------------------------------------------------
+
+1) Si consideri il linguaggio L delle stringhe su alfabeto {a,b,c} per cui 
+non vale che il numero delle "a", delle "b" e delle "c" e' lo stesso (vi sono
+almeno due tra "a", "b" e "c" per cui la quantita' delle une e' diversa dalla
+quantita' delle altre). Dire se il linguaggio L e', o meno, libero dal contesto
+e dimostrare la propria affermazione. Qual'e' il liguaggio complementare di L?
+
+2) Provare a sostituire, in SimpleExp.g4 e in SimpleCalcSTVisitor.java, 
+l'operatore "+" con l'operatore "-" (la grammatica ottenuta e' stata chiamata 
+SimpleExpMinus.g4) e confrontare il risultato ottenuto impostando 
+l'associativita' a destra con quella a sinistra.  
+ESEMPIO: 3-(4-2-7)*5
+
+-----------------------------------------------------------------------------
+ESPRESSIONI CON MULTIPLI OPERATORI A STESSO LIVELLO DI PRIORITA' (Exp.g4)
+-----------------------------------------------------------------------------
+
+L'utilizzo da parte di ANTLR di grammatiche EBNF (Extended Backus-Naur Form), invece di semplici CFG, consente di utilizzare, all'interno dei corpi delle produzioni, gli operatori delle espressioni regolari, come: "|" (alternativa), "*" (stella di Kleene), "+" (chiusura positiva) e "?" (presenza opzionale).
+
+Ciò ci consente di estendere la grammatica SimpleExp.g4 aggiungendo a "+" e "*"
+anche le operazioni "-" e "/" (intero della divisione tra interi), con 
+- operazioni "*" e "/" allo stesso livello di priorita' (piu' alto)
+- operazioni "+" e "-" allo stesso livello di priorita' (piu' basso)
+- per entrambi i livelli di priorita' associativita a sinistra
+
+Nei sorgenti di un progetto nuovo chiamato FOOL creiamo un package "exp" in cui collocare i files iniziali forniti dentro la directory "exp" (a parte il file prova.txt, esterno a "exp").
+
+Costruiamo la specifica lessicale/sintattica Exp.g4 
+- aggiungendo i token DIV e MINUS a quelli di SimpleExp.g4 
+- modificando la prima e la seconda produzione di SimpleExp.g4 in modo che 
+generino, rispettivamente: l'operazione "*" o "/", e l'operazione "+" o "-".
+
+-----------------------------------------------------------------------------
+CALCOLO RISULTATO PER ESPRESSIONI CON MULTIPLI OPERATORI A STESSA PRIORITA' 
+-----------------------------------------------------------------------------
+
+Nei nodi degli alberi sintattici della grammatica Exp.g4, es. per un nodo di 
+classe "ExpProd1Context", si possono avere due casi: o i suoi figli sono i 
+nodi di una espressione "exp" "*" "exp", o di una espressione "exp" "/" "exp".
+
+1) Costruiamo una classe visitor "CalcSTVisitor.java" modificando il codice 
+di visita in modo da considerare tali due casi. 
+
+2) Testiamo l'espressione (15-7+2)*5/10 sia utilizzando la associativita' a 
+sinistra per entrambe le produzioni, sia utilizzando la associativita' a 
+destra.
+
+3) Aggiungiamo la possibilita' di gestire, a livello di sintassi, numeri 
+negativi oltre che positivi ed estendiamo il visitor di conseguenza. Testiamo l'espressione (15-7+2)*-5/10
+
+-----------------------------------------------------------------------------
+VISITA SYNTAX TREE TRAMITE VISITOR PATTERN: GENERAZIONE ABSTRACT SYNTAX TREE
+-----------------------------------------------------------------------------
+
+All'interno del progetto FOOL creiamo un package "compiler" in cui collocare i 
+files iniziali forniti nella directory "compiler"  (a parte il file prova.fool).
+Il file FOOL.g4 contiene una prima grammatica incompleta del linguaggio FOOL (Functional Object Oriented Language) che via via estenderemo.
+Un primo esempio di codice FOOL e' nel file "esempio.fool". E' un linguaggio funzionale, quindi ogni programma torna un valore senza bisogno di "return"!
+
+Durante la fase di parsing il compilatore genera il syntax tree. Strettamente legata a tale fase vi e' la consecutiva generazione dell'ABSTRACT syntax tree.
+
+1) Usiamo le classi in AST.java per costruire un visitor dei syntax tree delle
+espressioni di FOOL.g4 aventi gli stessi operatori di quelle di SimpleExp.g4 (chiamato ASTGenerationSTVisitor.g4, di cui viene dato un file iniziale).
+Tale visitor deve generare un Abstract Syntax Tree fatto di oggetti "Node". 
+Ad esempio per il programma FOOL
+"(4+2)*-5;"  
+il visitor deve generare un oggetto fatto come segue:
+
+new ProgNode(
+  new TimesNode(
+    new PlusNode(
+      new IntNode(4), 
+      new IntNode(2), 
+    ),
+    new IntNode(-5), 
+  )
+)
+
+2) Testiamo il visitor tramite Test.java (che lo invoca dopo il parsing).
+
+-----------------------------------------------------------------------------
+VISITA ABSTRACT SYNTAX TREE (AST) TRAMITE VISITOR PATTERN: STAMPA DELL'AST 
+-----------------------------------------------------------------------------
+
+Facciamo una semplice visita dell'AST generato (composto da oggetti delle classi in AST.java) in modo da visualizzarlo stampando il nome della classe dei suoi nodi (senza il suffisso Node) in modo indentato. 
+Per esempio per il programma FOOL considerato prima
+"(4+2)*-5;"  
+il visitor deve stampare:
+Prog
+  Times
+    Plus
+      Int: 4
+      Int: 2
+    Int: -5
+
+1) Realizziamo una classe PrintASTVisitor (di cui viene dato un file iniziale) che effettui la visita implementando un metodo "visitNode" per ciascuna classe AST.java, che riceva un oggetto di tale classe come argomento (lo lanceremo sulla radice, che e' di classe ProgNode).
+Perche' Java da' errore quando proviamo a invocare "visitNode" passando come argomento un nodo figlio?
+
+Mentre, es., in C# esiste un cast "(dynamic)" che consente di determinare il metodo visitNode da invocare a run-time in base al tipo effettivo dell'argomento passato (come dynamic binding ma fatto sull'argomento), cio' non e' possibile in Java: associazione tra invocazione e metodo visitNode invocato fatta a compile-time.
+
+2) In Java dobbiamo usare il metodo classico di implementare il visitor pattern.
+a. si crea un metodo visit che riceve un generico Node come parametro n
+b. al fine di invocare il metodo visitNode(n) specifico per il tipo effettivo di n:
+- si dota ciascuna classe in AST di un metodo accept che invochi visitNode(this)
+- si invoca n.accept( ) in modo da utilizzare il dynamic binding di Java su n 
+NOTA:
+- devo aggiungere all'interfaccia Node il metodo accept 
+- tale metodo deve ricevere l'oggetto PrintASTVisitor (su cui invocare visitNode)
+
+Quando visitavamo i syntax tree utilizzavamo l'implementazione del visitor pattern generata da ANTLR4. Per gli AST abbiamo dovuto implementarlo noi!
+
+3) Testiamo il PrintASTVisitor decommentando le righe in fondo a Test.java
+
+4) Dotiamo il nostro PrintASTVisitor di indentazione automatica usando la stessa tecnica utilizzata per la visita dei syntax tree (es. in ASTGenerationSTVisitor)
+
+
+5) Al fine di poter realizzare altri tipi di visitor oltre al PrintASTVisitor 
+utilizziamo un BaseASTVisitor da cui ereditare: creiamo un package di libreria compiler.lib dove mettere le classi generiche Node e BaseASTVisitor
+
+6) BaseASTVisitor contiene: il codice di visit(Node n) e una implementazione
+vuota per tutti i metodi visitNode 
+(il metodo visit delle classi che ereditano da BaseASTVisitor, come PrintASTVisitor, deve invocare il metodo visit con super anziche' direttamente il metodo accept).
+Ora le classi in AST devono invocare visitNode(this) su un generico BaseASTVisitor: devo modificare il metodo accept in modo che riceva un generico BaseASTVisitor sia nell'interfaccia Node che nelle classi in AST
+
+7) Usiamo la reflection di Java per fare le stampe, in modo da facilitare l'estendibilita' del linguaggio: decommentiamo funzioni printNode in fondo a PrintASTVisitor e le usiamo per stampare in ogni visita.
+
+-----------------------------------------------------------------------------
+VISITA AST CON RITORNO DI UN VALORE (ES. RISULTATO) TRAMITE VISITOR PATTERN  
+-----------------------------------------------------------------------------
+
+Creiamo un'altra classe per la visita dell'AST. Questa volta vogliamo realizzare un visitor che torni un valore. Come esempio utilizziamo un CalcASTVisitor che calcoli il valore Integer che si ottiene come risultato di un programma FOOL 
+(per il frammento di FOOL in FOOL.g4, che ad es. non ha chiamate di funzione, e' possibile farlo semplicemente visitando l'AST analogamente a SimpleExp).
+
+1) Modifichiamo la classe BaseASTVisitor introducendo, tramite i generics di Java, un tipo parametrico S da usare come tipo di ritorno per i metodi visit (tale parametro sara' Integer nel CalcASTVisitor e Void nel PrintASTVisitor). 
+Modifichiamo inoltre il metodo accept nell'interfaccia Node e nelle classi dentro AST.java facendo si' che, anch'esso, torni S.
+
+2) Sistemiamo il PrintASTVisitor in modo che funzioni con la nuova versione parametrica di BaseASTVisitor usando Void
+(dichiarare Void come tipo di ritorno mi costringe a mettere "return null;").
+
+3) Testiamo il CalcASTVisitor decommentando le righe in fondo a Test.java
+
+4) Introduciamo una nuova eccezione unchecked "UnimplException" da lanciare
+nelle implementazioni di default del metodo visit in BaseASTVisitor.
+(importante per accorgerci che abbiamo dimenticato di implementare una visit che viene effettivamente invocata)
+
+-----------------------------------------------------------------------------
+DOTARE VISITE QUALSIASI DI AST DI OPZIONE DI STAMPA PER FARE DEBUG 
+-----------------------------------------------------------------------------
+
+In CalcASTVisitor, le stampe sono utili per debug, come posso fare per farle
+funzionare? 
+Copiare il codice di gestione stampa da PrintASTVisitor non va bene perche' il metodo visit che gestisce l'indentazione funziona con Void (e non Integer) e voglio una soluzione che vada bene per un qualsiasi visitor.
+
+1) Spostiamo il codice di gestione stampa (campo indent, metodo visit che gestisce l'indentazione e metodi printNode, che rendiamo protected) in BaseASTVisitor. 
+Rinominiamo il metodo visit che invoca accept in "visitByAcc" e facciamo in 
+modo che il metodo visit copiato gestisca ora un tipo di ritorno S. 
+
+Rendiamo la stampa opzionale: la stampa deve avvenire quando un booleano con valore true viene passato al costruttore del visitor (es. a CalcASTVisitor).
+
+2) Dotiamo BaseASTVisitor di un campo boolean "print" che indica se la funzione di stampa e' attivata, settato dal costruttore con parametro boolean.
+Condizioniamo il codice di visit che gestisce l'indentazione con "if (print)".
+- Dotiamo il CalcASTVisitor di un costruttore con parametro boolean "debug"
+che invoca l'analogo costruttore di BaseASTVisitor. 
+Condizioniamo le chiamate a printNode con "if (print)".
+- Dotiamo il PrintASTVisitor di un costruttore di default che invoca il
+costruttore boolean di BaseASTVisitor passando true (stampa sempre abilitata).
+
+3) Lanciando Test il CalcASTVisitor stampa l'AST solo se viene passato true.
+
+-----------------------------------------------------------------------------
+Esercizi SUL PARSING TOP-DOWN
+-----------------------------------------------------------------------------
+
+Costruire le tabelle di parsing per gli esempi di grammatiche nella directory 
+"esercizi" 
+- tabelle LL(1) per i file llparse_x.jff (calcolando First e Follow delle variabili)
+
+-----------------------------------------------------------------------------
+ESERCIZIO PER CASA:
+COMPLETARE GENERAZIONE DELL'ABSTRACT SYNTAX TREE PER GRAMMATICA IN FOOL.g4
+-----------------------------------------------------------------------------
+
+Completare la generazione dell'abstract syntax tree per la grammatica in 
+FOOL.g4 facendo cio' che segue:
+
+1) Aggiungere classi in AST.java per i seguenti nodi
+EqualNode (con due figli)
+BoolNode  (foglia avente un campo boolean)
+IfNode    (con tre figli)
+PrintNode (con un figlio)
+CONSEGNA: AST.java 
+
+2) Estendere ASTGenerationSTVisitor.java (inclusa la stampa del syntax tree fatta durante la visita) in modo che generi l'Abstract Syntax Tree per l'intera grammatica in FOOL.g4
+CONSEGNA: ASTGenerationSTVisitor.java
+
+3) Estendere PrintASTVisitor.java in modo che stampi gli Abstract Syntax Tree generati per l'intera grammatica in FOOL.g4
+CONSEGNA: PrintASTVisitor.java
+
+4) Estendere CalcASTVisitor.java in modo che calcoli il valore Integer che si ottiene come risultato di un programma per l'intera grammatica in FOOL.g4
+(si rappresentino i valori booleani true e false tramite interi 1 e 0)
+CONSEGNA: CalcASTVisitor.java
+
+5) Testare il visitor con il codice FOOL nel file "esempio.fool", cioe':
+print( 
+  if (5+3)*-7 == 9  
+    then { 8 }
+    else { false }
+);
+
+

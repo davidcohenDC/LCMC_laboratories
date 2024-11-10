@@ -1,0 +1,247 @@
+--------------------------------------------------------------------------------
+CORREZIONE ESERCIZIO PER CASA:
+COMPLETARE GENERAZIONE DELL'ABSTRACT SYNTAX TREE PER GRAMMATICA IN FOOL.g4
+--------------------------------------------------------------------------------
+
+Completare la generazione dell'abstract syntax tree per la grammatica in 
+FOOL.g4 facendo ciò che segue:
+
+1) Aggiungere classi in AST.java per i seguenti nodi
+EqualNode (con due figli)
+BoolNode  (foglia avente un campo boolean)
+IfNode    (con tre figli)
+PrintNode (con un figlio)
+CONSEGNA: AST.java 
+
+2) Estendere ASTGenerationSTVisitor.java (inclusa la stampa del syntax tree 
+fatta durante la visita) in modo che generi l'Abstract Syntax Tree per l'intera grammatica in FOOL.g4
+CONSEGNA: ASTGenerationSTVisitor.java
+
+3) Estendere PrintASTVisitor.java in modo che stampi gli Abstract Syntax Tree 
+generati per l'intera grammatica in FOOL.g4
+CONSEGNA: PrintASTVisitor.java
+
+4) Estendere CalcASTVisitor.java in modo che calcoli il valore Integer che si 
+ottiene come risultato di un programma per l'intera grammatica in FOOL.g4
+CONSEGNA: CalcASTVisitor.java
+
+5) Testare il visitor con il codice FOOL nel file "esempio.fool", cioè:
+print( 
+  if (5+3)*-7 == 9  
+    then { 8 }
+    else { false }
+);
+--------------------------------------------------------------------------------
+ESTENSIONE FOOL CON DICHIARAZIONE ED USO DI VARIABILI E FUNZIONI 
+--------------------------------------------------------------------------------
+
+Partiamo da un progetto FOOL avente come sorgenti (nella directory "compiler") i
+files iniziali forniti nella directory compiler. Il file FOOL.g4 contiene una 
+grammatica estesa del linguaggio FOOL, con anche dichiarazione (con costrutto 
+"let in" di ML) ed uso di variabili e funzioni. Un esempio è nel file prova.fool
+
+Rispetto alla versione del compilatore che abbiamo sviluppato all'ultimo 
+laboratorio (estesa dall'esercizio per oggi):
+- in ASTGenerationSTVisitor.java il ST visitato si stampa tramite reflection
+  (funzioni usiliare in FOOLlib.java, anche quella per stampa dell'AST) e la 
+  stampa si abilita passando "true" al costruttore (modalità debug) come per gli       ASTVisitor
+- l'interfaccia Node è stata trasformata in classe abstract per includere
+  la gestione del campo "line" che serve per la notifica degli errori
+  (classi in AST ora usano "extends" e sono tutte dotate di tale funzionalità)
+
+Inoltre CalcASTVisitor.java (esempio di AST visitor che torna un valore) non ci 
+serve più.
+
+1) Completiamo l'ASTGenerationSTVisitor in modo da generare l'AST per i nuovi 
+elementi sintattici presenti in FOOL.g4, utilizzando le nuove classi presenti in AST.java. Per ora ci limitiamo a funzioni senza parametri: non consideriamo 
+- parametri in dichiarazioni
+- argomenti in chiamate
+
+ATTENZIONE: gli errori sintattici fanno si' che ANTLR possa fare un match 
+parziale delle produzioni: in questo caso i figli successivi all'ultimo figlio 
+che fa match sono "null", mentre quelli precedenti sono non-"null".
+Alcuni token quindi sono sicuramente non-"null": es. il primo token in 
+produzioni che cominciano con un token oppure, ad es., il token PLUS in #plus 
+(la ricorsione a sinistra trasformata internamente in destra lo rende primo 
+token nel ciclo interno in cui sono matchate le produzioni #plus). 
+
+2) Testiamo l'ASTGenerationSTVisitor (e stampiamo l'AST generato con il 
+PrintASTVisitor, già esteso con le nuove classi) con il codice in "prova.fool":
+let
+  var y:int = 5+2;
+  fun g:bool ()
+    let 
+      fun f:bool ()
+        let 
+          var x:int = -1;
+        in g();   
+    in if y==3 then { f() } else { false };
+in  
+  print ( 
+    if g() 
+      then { y }
+      else { 10 }
+  ); 
+
+--------------------------------------------------------------------------------
+GENERAZIONE DELL'ENRICHED ABSTRACT SYNTAX TREE (EAST) TRAMITE SYMBOL TABLE
+--------------------------------------------------------------------------------
+
+Realizziamo la prima fase della semantic analysis vista a lezione: associare
+usi di identificatori (variabili o funzioni) a dichiarazioni tramite symbol 
+table, usando le regole di scoping statico
+- a use of an identifier x matches the declaration in the most closely enclosing 
+scope (such that the declaration precedes the use) 
+- inner scope identifier x declaration hides x declared in an outer scope
+In particolare scegliamo la realizzazione della symbol table come lista 
+(ArrayList) di hashtable (HashMap).
+
+1) Costruiamo una classe SymbolTableASTVisitor (di cui viene dato un file 
+iniziale) che associ usi a dichiarazioni tramite la symbol table 
+- dando errori in caso di multiple dichiarazioni e identificatori non dichiarati 
+  (la notifica di errore deve mostrare il numero di linea nel sorgente)
+- attaccando alla foglia dell'AST che rappresenta l'uso di un identificatore x
+  la symbol table entry (oggetto di classe STentry) che contiene le informazioni
+  prese dalla dichiarazione di x (per ora consideriamo solo il nesting level)
+(manteniamo la limitazione di considerare solo funzioni senza parametri)
+
+L'effetto della visita è che l'AST si trasforma in un Enriched Abstract Syntax 
+Tree (EAST), dove ad alcuni nodi dell'AST sono attaccate STentry. 
+E' stato possibile stabilire tale collegamento semantico grazie ai nomi degli identificatori, che da ora in poi non verranno più usati.
+
+2) Testiamo il SymbolTableASTVisitor con lo stesso codice FOOL usato al punto 2) dell'esercizio precedente, facendo piccole modifiche per mostrare gli errori.
+(decommentiamo le righe in fondo a Test.java e cancelliamo chiamata a 
+PrintASTVisitor)
+
+--------------------------------------------------------------------------------
+VISITA ENRICHED AST (EAST) TRAMITE VISITOR PATTERN: STAMPA DELL'EAST 
+--------------------------------------------------------------------------------
+
+Facciamo una semplice visita dell'Enriched AST generato in modo da visualizzarlo
+stampando in modo indentato, oltre ai suoi nodi (di classe che eredita da Node),
+anche le sue STentry.
+
+Per farlo dovremo realizzare un visitor che consenta di visitare sia Node
+che STentry tramite una interfaccia Visitable (contenente il metodo "accept")
+implementata da entrambi.
+
+1) Aggiungiamo un BaseEASTVisitor che estenda il BaseASTVisitor con un metodo di
+visita "visitSTentry" con argomento STentry. 
+(fornisce anche un metodo "printSTentry" per la stampa indentata)
+
+2) Aggiungiamo a STentry il metodo accept, tenendo conto che, sicuramente,
+riceverà come argomento un BaseEASTVisitor
+(codice commentato in fondo a STentry.java)
+
+3) Realizziamo un PrintEASTVisitor che estenda il BaseEASTVisitor: partiamo dal
+PrintASTVisitor (rinominandolo) e aggiungiamo una implementazione per il metodo
+di visita "visitSTentry" con argomento STentry. 
+Invochiamo visit sulle STentry nei nodi a cui sono state attaccate, se presenti.
+
+4) Testiamo il PrintEASTVisitor con lo stesso codice FOOL usato al punto 2)
+dell'esercizio precedente
+(decommentiamo le righe in fondo a Test.java)
+
+-----------------------------------------------------------------------------
+Esercizi SUL PARSING BOTTOM-UP
+-----------------------------------------------------------------------------
+
+Costruire le tabelle di parsing per gli esempi di grammatiche nella directory 
+"esercizi" 
+- tabelle SLR(1) per i file slrparse_x.jff (calcolando First e Follow delle variabili)
+
+--------------------------------------------------------------------------------
+ESERCIZIO PER CASA:
+COMPLETARE GENERAZIONE DELL'EAST TRAMITE SYMBOL TABLE PER GRAMMATICA FOOL.g4
+--------------------------------------------------------------------------------
+
+Completare la generazione dell'enriched abstract syntax tree (EAST) per la 
+grammatica in FOOL.g4 (che include anche parametri in dichiarazione funzioni e 
+argomenti in chiamata funzioni) facendo ciò che segue:
+
+1) Modificare AST.Java come segue
+- aggiungere campo parlist a FunNode (e aggiornare costruttore)
+- aggiungere campo arglist a CallNode (e aggiornare costruttore)
+- aggiungere classe ParNode (con campo id e type)
+CONSEGNA: AST.java 
+
+2) Modificare ASTGenerationSTVisitor.java come segue:
+- metodo Node visitFundec(FundecContext c) 
+All'inizio del metodo (dopo la stampa) bisogna creare (e memorizzare nella 
+variabile parList) un ArrayList di ParNode aventi, come id, la stringa
+c.ID(i).getText() e, come tipo, il nodo ottenuto visitando c.type(i) ; per 
+indice i compreso tra 1 e c.ID().size()-1 . Per ogni ParNode creato settare, 
+inoltre, il numero di linea a c.ID(i).getSymbol().getLine() . 
+Aggiungere parList alle informazioni passate al costruttore di FunNode.
+- metodo Node visitCall(CallContext c)
+All'inizio del metodo (dopo la stampa) bisogna creare (e memorizzare nella 
+variabile argList) un ArrayList contenente i nodi generati visitando le 
+espressioni in c.exp() . 
+Aggiungere argList alle informazioni passate al costruttore di CallNode.
+CONSEGNA: ASTGenerationSTVisitor.java
+
+3) Modificare SymbolTableASTVisitor.java come segue:
+- metodo visitNode(FunNode n)
+Aggiungere l'inserimento delle dichiarazioni dei parametri (nodi ParNode dentro n.parlist) nella symbol table: fare l'inserimento direttamente, **senza visitare i parametri**. Se l'id del parametro è già presente nello scope segnalare errore:
+"Par id .... at line .... already declared"
+ed incrementare il campo stErrors
+- metodo visitNode(IdNode n) {
+Modificare la stampa di errore in:
+"Var or Par id .... at line .... not declared"
+- metodo visitNode(CallNode n)
+Aggiungere la visita degli argomenti della chiamata di funzione (in n.arglist).
+CONSEGNA: SymbolTableASTVisitor.java
+
+4) Modificare PrintEASTVisitor.java come segue:
+- aggiungere un metodo visitNode(ParNode n) che, dopo aver stampato il nome del 
+nodo e il campo "id", invochi la visita sul campo "type".
+- decommentare la invocazione della visita sui parametri in visitNode(FunNode n) 
+e sugli argomenti in visitNode(CallNode n) 
+CONSEGNA: PrintEASTVisitor.java
+
+5) Testare il codice creato con l'esempio in "esempio.fool". L'output deve
+essere il seguente:
+
+Visualizing Enriched AST...
+ProgLetIn
+  Var: y
+    IntType
+    Plus
+      Int: 5
+      Int: 2
+  Fun: g
+    BoolType
+    Par: b
+      BoolType
+    Fun: f
+      BoolType
+      Par: n
+        IntType
+      Par: m
+        IntType
+      Var: x
+        IntType
+        Id: m
+          STentry: nestlev 2
+      Call: g
+        STentry: nestlev 0
+        Equal
+          Int: 3
+          Int: 5
+    If
+      Id: b
+        STentry: nestlev 1
+      Call: f
+        STentry: nestlev 1
+        Int: 2
+        Int: 3
+      Bool: false
+  Print
+    If
+      Call: g
+        STentry: nestlev 0
+        Bool: true
+      Id: y
+        STentry: nestlev 0
+      Int: 10
+

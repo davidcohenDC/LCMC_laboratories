@@ -1,0 +1,13 @@
+Reminder: Abstract Syntax Tree per una espressione 1+2+3
+
+    +
+   / \
+  +   3
+ / \
+1   2
+
+Plus
+  Plus   
+    Int:1
+    Int:2
+  Int:3
