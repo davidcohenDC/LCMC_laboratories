@@ -1,0 +1,59 @@
+5+3
+
+push 5
+push 3
+add (fa il pop dei due valori che sono in cima allo stack e poi push del risultato)
+
+5-3
+push 5
+push 3
+sub
+
+calcolo ((3+5)*(7-8))/(2*6)
+
+
+cgen(e1)
+cgen(e2)
+mult
+
+---
+
+cgen(3+5)  //calcolo più stack invariato con risultato sulla cima dello stack
+cgen(7-8)
+mult
+
+---
+
+push 5
+push 3
+add
+push 5
+push 3
+sub
+mult
+cgen(e2)
+
+----
+
+push 2
+push 6
+mult
+div
+
+--->
+
+
+push 3
+push 5
+add
+push 7
+push 8
+sub
+mult
+push 2
+push 6
+mult
+div
+
+
+
