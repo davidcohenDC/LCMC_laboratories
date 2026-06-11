@@ -1,0 +1,30 @@
+LAYOUT AR DI UNA FUNZIONE: (STACK CRESCE VERSO IL BASSO!)
+
+CL:address (fp) di AR chiamante
+valore ultimo (m-esimo) parametro                     [offset  m]
+.
+.
+valore primo parametro                                [offset  1]   
+AL:address (fp) di AR della dichiarazione             [offset  0]<- $fp in codice body della funz
+Return Address                            		     [offset -1]
+valore/indirizzo prima var/funz dichiarata      	     [offset -2]
+valore/indirizzo seconda var/funz                     [offset -3]
+.
+.
+valore/indirizzo ultima (n-esima) var/funz            [offset -(n+1)] 
+
+---------------------------------------------------------------------------------------------
+
+
+SOLO AR AMBIENTE GLOBALE: (STACK CRESCE VERSO IL BASSO!)
+
+[BASE DELLO STACK E' QUI SOTTO]                       [offset  0]<- $fp in codice body della funz
+Return Address (fittizio, si va in halt)              [offset -1]
+
+valore/indirizzo prima var dichiarata                 [offset -2]
+valore/indirizzo seconda var/funz                     [offset -3]
+.
+.
+valore/indirizzo ultima (n-esima) var/funz            [offset -(n+1)] 
+
+  

@@ -1,2 +1,13 @@
-.idea*
-/out/*
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Build output
+out/
+bin/
+*.class
+
+# OS-specific
+.DS_Store
+Thumbs.db
+desktop.ini

@@ -1,0 +1,145 @@
+-----------------------------------------------------------------------------
+SOLUZIONE ESERCIZIO PER CASA: 
+COMPLETARE IMPLEMENTAZIONE VIRTUAL MACHINE PER GRAMMATICA IN SVM.g4
+-----------------------------------------------------------------------------
+
+Completare l'implementazione della Virtual Machine considerando l'intera 
+grammatica SVM.g4 (terminando tutte le operazioni).
+
+Sono previsti i seguenti registri interni
+HP (heap pointer)
+FP (frame pointer)
+RA (return address)
+TM (temporary storage)
+da implementare come campi analogmente ai registri IP e SP.
+
+Inizialmente il registro FP deve avere lo stesso valore di SP mentre HP 
+deve essere inizializzato a 0.
+
+Come test, provare il file "quicksort.fool.asm" che deve stampare:
+1
+2
+2
+3
+4
+5
+
+-----------------------------------------------------------------------------
+CODE GENERATION TRAMITE VISITA DELL'(ENRICHED) ABSTRACT SYNTAX TREE
+STEP1: NO DICHIARAZIONE (E CHIAMATA) FUNZIONI
+-----------------------------------------------------------------------------
+
+Partiamo da un progetto FOOL avente come sorgenti i files iniziali forniti 
+nella directory "compiler" e nella directory "svm" (contenente i files della 
+nostra Stack Virtual Machine). 
+
+Realizziamo l'ultima fase del compilatore: la code generation, che viene 
+effettuato tramite visita dell'(Enriched) Abstract Syntax Tree determinando il
+codice generato dalle espressioni (String) in modo bottom-up.
+
+Tecnicamente la code generation non richiederà di proseguire la visita dell'AST  
+visitando anche le STentry. Quindi, pur accedendo alle STentry attaccate ai Node, 
+sarà sufficiente un CodeGenerationASTVisitor che genera il codice sotto forma di 
+una stringa Java (si veda esempio in "prova.fool.asm").
+
+1) Inizialmente consideriamo una limitazione al linguaggio FOOL.g4 in cui non si 
+usino ne' dichiarazioni ne' chiamate di funzioni: si ha quindi solo l'ambiente 
+globale, in cui sono dichiarate variabili che vengono utilizzate localmente 
+dalla main program expression (non si hanno nested scopes come a lezione).
+Si veda esempio in "prova2.fool".
+
+Sullo stack si ha quindi il solo AR dell'ambiente globale (in cui vengono 
+allocate le variabili dichiarate quando inizia l'esecuzione del programma):
+utilizziamo come layout per tale AR quello in "layout solo var globali.txt".
+Su tale layout sarà basata la generazione di codice.
+
+2) Modifichiamo la classe SymbolTableASTVisitor aggiungendo il calcolo e 
+l'inserimento dell'offset nelle STentry (campo offset) per i VarNode.
+
+3) Modifichiamo la classe PrintEASTVisitor aggiungendo la stampa dell'offset 
+nella visita delle STentry.
+
+4) Costruiamo una classe CodeGenerationASTVisitor (di cui viene dato un file 
+iniziale) che realizzi la code generation dei programmi FOOL la cui sintassi 
+è quella di FOOL.g4, a parte la dichiarazione e chiamata di funzioni
+(ci si avvale del metodo di FOOLlib nlJoin() che concatena stringhe di codice 
+inserendo un newline "\n" come separatore interno tra stringhe).
+
+5) Testiamo il CodeGenerationASTVisitor con il codice FOOL in "prova2.fool" 
+(decommentiamo le righe in fondo a Test.java che assemblano ed eseguono il 
+codice generato, come già spiegato nella lezione sulla SVM) e visualizziamo 
+il codice generato nel file ".asm".
+
+-----------------------------------------------------------------------------
+CODE GENERATION TRAMITE VISITA DELL'(ENRICHED) ABSTRACT SYNTAX TREE
+STEP2: DICHIARAZIONE (E CHIAMATA) DI FUNZIONI E NESTED SCOPES
+-----------------------------------------------------------------------------
+
+Consideriamo ora il linguaggio completo in FOOL.g4, comprendendo la 
+dichiarazione di funzioni e i nested scopes. Progettiamo il layout degli AR 
+(per ambiente globale e chiamate di funzioni) lavorando sul file "progettiamo 
+nostro layout.txt", dove è stato inizialmente inserito il layout per gli AR 
+delle funzioni considerato delle slides di lezione.
+
+Sul progetto del layout degli AR sarà basata la generazione di codice.
+
+2) Modifichiamo la classe SymbolTableASTVisitor aggiungendo il calcolo e 
+l'inserimento dell'offset nelle STentry (campo offset) per tutte le 
+dichiarazioni: variabili, funzioni e parametri.
+
+La code generation di usi di identificatori (usi di variabili IdNode o chiamate 
+di funzioni CallNode) richiede di conoscere la differenza di nesting level tra 
+l'uso (IdNode/CallNode) e la relativa dichiarazione (campo "nl" della STentry). 
+Dobbiamo quindi dotare anche IdNode e CallNode di un campo "nl".
+
+3) Modifichiamo la classe SymbolTableASTVisitor aggiungendo l'inserimento 
+del nesting level nel campo "nl" di IdNode e CallNode.
+
+4) Modifichiamo la classe PrintEASTVisitor aggiungendo la stampa del campo 
+"nl" nella visita di IdNode e CallNode.
+
+Commentando l'esecuzione del CodeGenerationASTVisitor in Test.java possiamo 
+visualizzare l'Enriched AST per l'esempio in "prova.fool": negli IdNode e 
+CallNode si vede la differenza di nesting level con la relativa dichiarazione. 
+
+5) Modifichiamo la classe CodeGenerationASTVisitor realizzando la code 
+generation dei programmi FOOL la cui sintassi è quella di FOOL.g4, a parte 
+il codice generato per il corpo delle funzioni.
+
+-----------------------------------------------------------------------------
+ESERCIZIO PER CASA:
+COMPLETARE CODE GENERATION TRAMITE VISITA DELL'(ENRICHED) AST PER FOOL.g4
+-----------------------------------------------------------------------------
+
+Completare la realizzazione della code generation dei programmi FOOL la cui 
+sintassi è in FOOL.g4, includendo anche il codice generato per il corpo delle 
+funzioni (durante la visita del nodo FunNode).
+
+1) Modificare CodeGenerationASTVisitor.java aggiungendo, nell'argomento di 
+"putCode()" invocato dal metodo di visita di FunNode, il codice generato per 
+il corpo di una funzione (preceduto dalla relativa etichetta funl+":"). 
+Il codice generato, deve effettuare la seguente sequenza di passi:
+
+// set $fp to $sp value 
+// load $ra value
+// generate code for local declarations 
+
+// generate code for function body expression
+
+// set $tm to popped value (function result)
+// remove local declarations from stack
+// set $ra to popped value
+// remove Access Link from stack 
+// remove parameters from stack
+// set $fp to popped value (Control Link)
+// load $tm value
+// load $ra value
+// jump to popped address
+
+Per quanto riguarda il passo "generate code for local declarations" 
+utilizzare una stringa "declCode" creata come per il ProgLetInNode.
+CONSEGNA: CodeGenerationASTVisitor.java
+
+2) Testare il codice creato con il semplice esempio in "prova3.fool" e provare 
+a capire funzionamento del codice generato, visualizzando "prova3.fool.asm". 
+Successivamente testare il codice creato con l'esempio in "prova.fool".
